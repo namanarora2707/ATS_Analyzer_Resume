@@ -7,7 +7,10 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
+app.get("/", (req, res) => {
+  res.send("Welcome to Nodejs Authentication Tutorial");
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Visit: http://localhost:${PORT}`);
 });
