@@ -1,5 +1,5 @@
 import { createServer } from "./index.js";
-const cors = require("cors");
+import cors from "cors";
 const app = createServer();
 const PORT = process.env.PORT || 8080;
 app.use(cors({
