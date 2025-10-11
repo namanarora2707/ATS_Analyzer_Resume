@@ -1,0 +1,17 @@
+{
+  "name": "resume-ats-server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node node-build.js",
+    "dev": "nodemon node-build.js",
+    "build": "vite build --config./vite.config.server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "zod": "^3.25.76"
+  }
+}
