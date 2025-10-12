@@ -5,6 +5,9 @@ import { Loader2 } from 'lucide-react';
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
+  console.log('ProtectedRoute - user:', user); // Debugging log
+  console.log('ProtectedRoute - loading:', loading); // Debugging log
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center gradient-primary">
@@ -17,6 +20,7 @@ export default function ProtectedRoute({ children }) {
   }
 
   if (!user) {
+    console.log('ProtectedRoute - user not authenticated, redirecting to /login'); // Debugging log
     return <Navigate to="/login" replace />;
   }
 

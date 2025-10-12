@@ -18,8 +18,7 @@ export const ANALYSIS_ENDPOINTS = {
 // User model structure (for reference)
 export const USER_FIELDS = {
   id: 'string',
-  email: 'string',
-  name: 'string',
+  username: 'string',
   createdAt: 'string'
 };
 
@@ -58,13 +57,14 @@ export const createHistoryResponse = (success, analyses = []) => ({
 
 // Validation helpers
 export const validateLoginRequest = (data) => {
-  const { email, password } = data;
-  return email && password;
+  const { username, password } = data;
+  return username && password;
 };
 
 export const validateSignupRequest = (data) => {
-  const { name, email, password } = data;
-  return name && email && password && password.length >= 6;
+  const { username, password } = data;
+  // Require username and password with minimum length 6
+  return username && password && password.length >= 6;
 };
 
 export const validateAnalyzeRequest = (data) => {

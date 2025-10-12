@@ -1,39 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { Loader2, Mail, Lock, FileText } from 'lucide-react';
 import './login.css';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log('Login component mounted');
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form submitted');
+    console.log('Username:', username);
+    console.log('Password:', password);
+
     setError('');
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/v1/user/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed. Please try again.');
+      const result = await login(username, password);
+      console.log('Login result:', result);
+      if (result.success) {
+        navigate('/dashboard');
+      } else {
+        throw new Error(result.message || 'Login failed.');
       }
-
-      navigate('/dashboard');
     } catch (err) {
+      console.error('Error during login:', err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -71,17 +72,17 @@ export default function Login() {
               )}
               
               <div className="form-group">
-                <label htmlFor="email" className="form-label">
-                  Email
+                <label htmlFor="username" className="form-label">
+                  Username
                 </label>
                 <div className="input-icon-wrapper">
                   <Mail className="input-icon w-4 h-4" />
                   <input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="username"
+                    type="text"
+                    placeholder="Enter your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="input input-with-icon"
                     required
                     disabled={loading}

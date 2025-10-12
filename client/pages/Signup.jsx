@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from '../hooks/useAuth.jsx';
 import "./signup.css";
 
 export default function SignUp() {
@@ -8,6 +9,7 @@ export default function SignUp() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
+  const { signup } = useAuth();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -15,24 +17,15 @@ export default function SignUp() {
     setSuccess("");
 
     try {
-      const response = await fetch(`/api/v1/user/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to sign up");
+      const result = await signup(username, password);
+      if (result.success) {
+        setSuccess("Signup successful! Redirecting to login...");
+        setTimeout(() => {
+          navigate('/login');
+        }, 1500);
+      } else {
+        throw new Error(result.message || 'Failed to sign up');
       }
-
-      setSuccess("Signup successful! Redirecting to login...");
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
     } catch (err) {
       setError(err.message);
     }

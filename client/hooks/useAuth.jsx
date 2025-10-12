@@ -23,50 +23,59 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (username, password) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/login`, {
+  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/v1/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
-      if (data.success && data.user && data.token) {
-        setUser(data.user);
+      // Backend returns { message: 'Login Successful', data: user, token }
+      if (response.ok && data && data.token) {
+        const user = data.data || data.user || null;
+        setUser(user);
         localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('user', JSON.stringify(user));
+        return { success: true, user, token: data.token, message: data.message };
       }
 
-      return data;
+      return { success: false, user: null, token: null, message: data.message || 'Login failed' };
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, user: null, token: null, message: 'Network error. Please try again.' };
     }
   };
 
-  const signup = async (name, email, password) => {
+  const signup = async (username, password) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/signup`, {
+  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/v1/user/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
-      if (data.success && data.user && data.token) {
-        setUser(data.user);
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+      // Backend returns { message: 'User Created Successfully', newUser }
+      if (response.ok && data) {
+        const user = data.newUser || data.user || null;
+        // NOTE: backend may not return a token on signup; only set user if provided
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+          localStorage.setItem('user', JSON.stringify(user));
+          setUser(user);
+        }
+        return { success: true, user, token: data.token || null, message: data.message };
       }
 
-      return data;
+      return { success: false, user: null, token: null, message: data.message || 'Signup failed' };
     } catch (error) {
       console.error('Signup error:', error);
       return { success: false, user: null, token: null, message: 'Network error. Please try again.' };

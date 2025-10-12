@@ -11,18 +11,18 @@ const generateToken = (userId) => {
 
 export const handleLogin = (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!email || !password) {
-      const response = createAuthResponse(false, null, null, "Email and password are required");
+    if (!username || !password) {
+      const response = createAuthResponse(false, null, null, "Username and password are required");
       return res.status(400).json(response);
     }
 
-    // Find user by email (in production, hash and compare passwords)
-    const user = users.find(u => u.email === email);
+    // Find user by username (in production, hash and compare passwords)
+    const user = users.find(u => u.username === username);
     
     if (!user) {
-      const response = createAuthResponse(false, null, null, "Invalid email or password");
+      const response = createAuthResponse(false, null, null, "Invalid username or password");
       return res.status(401).json(response);
     }
 
@@ -43,10 +43,10 @@ export const handleLogin = (req, res) => {
 
 export const handleSignup = (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!name || !email || !password) {
-      const response = createAuthResponse(false, null, null, "Name, email, and password are required");
+    if (!username || !password) {
+      const response = createAuthResponse(false, null, null, "Username and password are required");
       return res.status(400).json(response);
     }
 
@@ -56,17 +56,16 @@ export const handleSignup = (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = users.find(u => u.email === email);
+    const existingUser = users.find(u => u.username === username);
     if (existingUser) {
-      const response = createAuthResponse(false, null, null, "User with this email already exists");
+      const response = createAuthResponse(false, null, null, "User with this username already exists");
       return res.status(409).json(response);
     }
 
     // Create new user
     const newUser = {
       id: nextUserId.toString(),
-      email,
-      name,
+      username,
       createdAt: new Date().toISOString()
     };
     

@@ -7,7 +7,7 @@ export default defineConfig(({ command }) => ({
     port: 8080,
     proxy: command === "serve" ? {
       "/api": {
-        target: "https://ats-analyzer-resume.onrender.com",
+        target: "https://ats-analyzer-resume-hhwd.onrender.com",
         changeOrigin: true,
         secure: false,
       },
