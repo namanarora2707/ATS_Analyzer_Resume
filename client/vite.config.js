@@ -1,17 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import path from "path";
-import { fileURLToPath } from "url";
 
-// __dirname setup for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+// No need for __dirname/__filename in frontend Vite
 export default defineConfig(({ command }) => ({
   server: {
     host: "::",
     port: 8080,
-    // ✅ Proxy ONLY during local development
     proxy: command === "serve" ? {
       "/api": {
         target: "https://ats-analyzer-resume.onrender.com",
@@ -20,17 +14,13 @@ export default defineConfig(({ command }) => ({
       },
     } : {},
   },
-
   build: {
     outDir: "dist",
   },
-
-  plugins: [react()], // ✅ Only React plugin; no Backend loading
-
+  plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./"),
-      // 🚨 Removed @shared and ../server imports to avoid backend bundling
+      "@": new URL("./", import.meta.url).pathname, // replace Node path usage
     },
   },
 }));
