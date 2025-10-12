@@ -4,13 +4,13 @@ import User from "../models/userModels.js"; // make sure your model also uses ES
 
 export const signUp = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: "Please Input Email and Password" });
+    if (!username || !password) {
+      return res.status(400).json({ message: "Please Input Username and Password" });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ message: "User Already Exists" });
     }
@@ -18,7 +18,7 @@ export const signUp = async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const newUser = new User({ email, password: hashedPassword });
+    const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
 
     return res.status(201).json({ message: "User Created Successfully", newUser });
@@ -30,24 +30,24 @@ export const signUp = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: "Please Input Email and Password" });
+    if (!username || !password) {
+      return res.status(400).json({ message: "Please Input Username and Password" });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: user._id, username: user.username },
       process.env.SECRET_KEY || "1234!@#%<{*&) ",
       { expiresIn: "1h" }
     );
