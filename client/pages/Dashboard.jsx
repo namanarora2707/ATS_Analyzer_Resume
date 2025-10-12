@@ -15,7 +15,7 @@ import {
   Calendar,
   RefreshCw
 } from 'lucide-react';
-import { createAnalysisResponse, createHistoryResponse } from '@shared/api.js';
+import { createAnalysisResponse, createHistoryResponse } from './apiClient.js';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();

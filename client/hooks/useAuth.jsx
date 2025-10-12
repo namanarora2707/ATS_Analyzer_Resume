@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { createAuthResponse } from '@shared/api.js';
+import { createAuthResponse } from '../pages/apiClient.js';
 
 const AuthContext = createContext(undefined);
 
@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
 
   const signup = async (name, email, password) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/signup`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
