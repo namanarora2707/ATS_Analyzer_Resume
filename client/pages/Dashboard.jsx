@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { createAnalysisResponse, createHistoryResponse } from './apiClient.js';
 
+
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const [selectedFile, setSelectedFile] = useState(null);

@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
-// No need for __dirname/__filename in frontend Vite
 export default defineConfig(({ command }) => ({
   server: {
     host: "::",
@@ -20,7 +19,7 @@ export default defineConfig(({ command }) => ({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": new URL("./", import.meta.url).pathname, // replace Node path usage
+      "@": new URL("./", import.meta.url).pathname,
     },
   },
 }));

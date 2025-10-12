@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { createAuthResponse } from '../pages/apiClient.js';
 
 const AuthContext = createContext(undefined);
 
@@ -45,7 +44,7 @@ export function AuthProvider({ children }) {
       return data;
     } catch (error) {
       console.error('Login error:', error);
-      return createAuthResponse(false, null, null, 'Network error. Please try again.');
+      return { success: false, user: null, token: null, message: 'Network error. Please try again.' };
     }
   };
 
@@ -70,7 +69,7 @@ export function AuthProvider({ children }) {
       return data;
     } catch (error) {
       console.error('Signup error:', error);
-      return createAuthResponse(false, null, null, 'Network error. Please try again.');
+      return { success: false, user: null, token: null, message: 'Network error. Please try again.' };
     }
   };
 
