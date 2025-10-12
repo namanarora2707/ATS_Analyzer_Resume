@@ -1,16 +1,28 @@
 import { createServer } from "./index.js";
+import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import connectDb from "./config/database.js";
+import userRouter from "./routes/user.Routes.js"; // <-- fixed
+
+dotenv.config();
+
+connectDb();
+
 const app = createServer();
-const PORT = process.env.PORT || 8080;
+
+app.use(express.json());
 app.use(cors({
-  origin: "*", // or specify frontend domain like: "http://localhost:5173"
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
+
+app.use("/api/v1/user", userRouter);
+
 app.get("/", (req, res) => {
   res.send("Welcome to Nodejs Authentication Tutorial");
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
