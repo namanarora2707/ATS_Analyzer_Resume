@@ -16,7 +16,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { createAnalysisResponse, createHistoryResponse } from './apiClient.js';
-
+import './dashboard.css';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();

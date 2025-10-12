@@ -10,6 +10,7 @@ import {
   BarChart3,
   Calendar
 } from 'lucide-react';
+import './index.css';
 
 export default function Index() {
   const { user } = useAuth();

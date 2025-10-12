@@ -80,10 +80,10 @@ export default function Login() {
                   <input
                     id="username"
                     type="text"
-                    placeholder="Enter your username"
+                    // placeholder="Enter your username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="input input-with-icon"
+                    // className="input input-with-icon"
                     required
                     disabled={loading}
                   />
@@ -99,7 +99,7 @@ export default function Login() {
                   <input
                     id="password"
                     type="password"
-                    placeholder="Enter your password"
+                    // placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="input input-with-icon"
