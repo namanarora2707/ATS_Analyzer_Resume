@@ -1,43 +1,54 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { createServer } from "../server/index.js";
 import { fileURLToPath } from "url";
 
-// __dirname equivalent in ES modules
+// __dirname setup for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default defineConfig(({ mode }) => ({
+// 🚨 Import Express server ONLY in development
+let expressPlugin = () => ({ name: "noop-plugin" });
+if (process.env.NODE_ENV === "development") {
+  const { createServer } = await import("../server/index.js");
+  expressPlugin = function () {
+    return {
+      name: "express-plugin",
+      apply: "serve",
+      configureServer(server) {
+        const app = createServer();
+        server.middlewares.use(app);
+      },
+    };
+  };
+}
+
+export default defineConfig(({ command }) => ({
   server: {
     host: "::",
     port: 8080,
-    fs: {
-      // Allow project root and server folder so the client can import server/shared during dev
-      allow: [
-        __dirname,
-        path.resolve(__dirname, ".."), // project root
-        path.resolve(__dirname, "../server"),
-      ],
-      proxy: {
-        "/api": {
+    // ✅ Proxy only for local dev — Vercel will not use this
+    proxy: command === "serve" ? {
+      "/api": {
         target: "https://ats-analyzer-resume.onrender.com",
         changeOrigin: true,
         secure: false,
       },
-    },
-      deny: [
-        ".env",
-        ".env.*",
-        "*.{crt,pem}",
-        "**/.git/**",
+    } : {},
+    fs: {
+      allow: [
+        __dirname,
+        path.resolve(__dirname, ".."),
+        path.resolve(__dirname, "../server"),
       ],
+      deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**"],
     },
   },
   build: {
     outDir: "dist",
   },
-  plugins: [react(), expressPlugin()],
+  // ✅ Only load Express plugin in development, not in Vercel build
+  plugins: command === "serve" ? [react(), expressPlugin()] : [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./"),
@@ -45,15 +56,3 @@ export default defineConfig(({ mode }) => ({
     },
   },
 }));
-
-function expressPlugin() {
-  return {
-    name: "express-plugin",
-    apply: "serve", // Only during dev
-    configureServer(server) {
-      const app = createServer();
-      // Attach your Express app to Vite's dev server
-      server.middlewares.use(app);
-    },
-  };
-}
