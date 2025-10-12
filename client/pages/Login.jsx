@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { Loader2, Mail, Lock, FileText } from 'lucide-react';
+import './login.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,15 +17,27 @@ export default function Login() {
     setError('');
     setLoading(true);
 
-    const result = await login(email, password);
-    
-    if (result.success) {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed. Please try again.');
+      }
+
       navigate('/dashboard');
-    } else {
-      setError(result.message || 'Login failed. Please try again.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
