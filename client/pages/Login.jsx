@@ -76,14 +76,15 @@ export default function Login() {
                   Username
                 </label>
                 <div className="input-icon-wrapper">
-                  <Mail className="input-icon w-4 h-4" />
+                  {username.length === 0 && (
+                    <Mail className="input-icon w-4 h-4" />
+                  )}
                   <input
                     id="username"
                     type="text"
-                    // placeholder="Enter your username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    // className="input input-with-icon"
+                    className={`input ${username.length > 0 ? '' : 'input-with-icon'}`}
                     required
                     disabled={loading}
                   />
@@ -95,14 +96,15 @@ export default function Login() {
                   Password
                 </label>
                 <div className="input-icon-wrapper">
-                  <Lock className="input-icon w-4 h-4" />
+                  {password.length === 0 && (
+                    <Lock className="input-icon w-4 h-4" />
+                  )}
                   <input
                     id="password"
                     type="password"
-                    // placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="input input-with-icon"
+                    className={`input ${password.length > 0 ? '' : 'input-with-icon'}`}
                     required
                     disabled={loading}
                   />
